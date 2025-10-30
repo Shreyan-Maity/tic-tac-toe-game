@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <!-- Load Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Google Font 'Inter' -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Set default font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Add a subtle glow for the winners */
+        .cell.X {
+            color: #22d3ee; /* cyan-400 */
+            text-shadow: 0 0 10px #22d3ee;
+            animation: appear 0.3s ease-out;
+        }
+        .cell.O {
+            color: #ec4899; /* pink-400 */
+            text-shadow: 0 0 10px #ec4899;
+            animation: appear 0.3s ease-out;
+        }
+
+        /* Animation for X and O appearing */
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Prevent layout shift on status message change */
+        #status-message {
+            min-height: 2.25rem; /* Equivalent to h-9 */
+        }
+
+        /* Style for the winning line */
+        #winning-line-svg line {
+            stroke-width: 8px; /* Made line thicker */
+            stroke-linecap: round;
+            /* Add a glow to the line */
+            filter: drop-shadow(0 0 5px currentColor);
+            /* Animation for the line drawing */
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw-line 0.5s ease-out forwards;
+        }
+
+        @keyframes draw-line {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-blue-900 text-white">
+
+    <!-- Main game container -->
+    <div class="flex flex-col items-center justify-center min-h-screen p-4">
+
+        <!-- Game Title -->
+        <h1 class="text-4xl md:text-5xl font-bold mb-6 text-cyan-400 tracking-tight" style="text-shadow: 0 0 15px rgba(34, 211, 238, 0.4);">
+            Tic-Tac-Toe
+        </h1>
+
+        <!-- Status Message -->
+        <div id="status-message" class="text-xl md:text-2xl font-bold mb-6 h-9 transition-all duration-300">
+            <!-- Status will be injected by JavaScript -->
+        </div>
+
+        <!-- Game Board Container -->
+        <div id="game-board-container" class="relative">
+            <!-- Game Board -->
+            <!-- Updated board style for "glassmorphism" effect -->
+            <div id="game-board" class="grid grid-cols-3 gap-3 bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-lg shadow-2xl">
+                <!-- 
+                    Cells will be 3x3 grid.
+                    Updated cell style for "glassmorphism" effect
+                -->
+                <div class="cell w-24 h-24 md:w-32 md:h-32 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-5xl md:text-6xl font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-white/20 hover:scale-105" data-cell-index="0"></div>
+                <div class="cell w-24 h-24 md:w-32 md:h-32 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-5xl md:text-6xl font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-white/20 hover:scale-105" data-cell-index="1"></div>
+                <div class="cell w-24 h-24 md:w-32 md:h-32 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-5xl md:text-6xl font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-white/20 hover:scale-105" data-cell-index="2"></div>
+                <div class="cell w-24 h-24 md:w-32 md:h-32 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-5xl md:text-6xl font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-white/20 hover:scale-105" data-cell-index="3"></div>
+                <div class="cell w-24 h-24 md:w-32 md:h-32 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-5xl md:text-6xl font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-white/20 hover:scale-105" data-cell-index="4"></div>
+                <div class="cell w-24 h-24 md:w-32 md:h-32 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-5xl md:text-6xl font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-white/20 hover:scale-105" data-cell-index="5"></div>
+                <div class="cell w-24 h-24 md:w-32 md:h-32 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-5xl md:text-6xl font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-white/20 hover:scale-105" data-cell-index="6"></div>
+                <div class="cell w-24 h-24 md:w-32 md:h-32 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-5xl md:text-6xl font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-white/20 hover:scale-105" data-cell-index="7"></div>
+                <div class="cell w-24 h-24 md:w-32 md:h-32 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center text-5xl md:text-6xl font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-white/20 hover:scale-105" data-cell-index="8"></div>
+            </div>
+            
+            <!-- SVG for winning line -->
+            <svg id="winning-line-svg" class="absolute top-0 left-0 w-full h-full" style="pointer-events: none;"></svg>
+        </div>
+
+        <!-- Restart Button -->
+        <!-- Updated button style with gradient and hover effect -->
+        <button id="restart-button" class="mt-8 px-8 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-bold text-lg rounded-lg shadow-lg hover:from-cyan-300 hover:to-blue-400 hover:scale-105 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-opacity-50">
+            Restart Game
+        </button>
+    </div>
+
+    <!-- JavaScript Game Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- DOM Elements ---
+            const statusMessage = document.getElementById('status-message');
+            const restartButton = document.getElementById('restart-button');
+            const cells = document.querySelectorAll('.cell');
+            const svgLineElement = document.getElementById('winning-line-svg'); // For drawing the line
+            const gameBoard = document.getElementById('game-board'); // For coordinate calculations
+
+            // --- Game State Variables ---
+            let gameActive = true;
+            let currentPlayer = "X";
+            let gameState = ["", "", "", "", "", "", "", "", ""];
+
+            // --- Game Constants ---
+            const winMessage = () => `Player ${currentPlayer} has won!`;
+            const drawMessage = () => `Game ended in a draw!`;
+            const currentPlayerTurn = () => `It's ${currentPlayer}'s turn`;
+
+            const winningConditions = [
+                [0, 1, 2], // Horizontal
+                [3, 4, 5], // Horizontal
+                [6, 7, 8], // Horizontal
+                [0, 3, 6], // Vertical
+                [1, 4, 7], // Vertical
+                [2, 5, 8], // Vertical
+                [0, 4, 8], // Diagonal
+                [2, 4, 6]  // Diagonal
+            ];
+
+            // --- Game Functions ---
+
+            /**
+             * Initializes the game or resets it.
+             */
+            function initializeGame() {
+                statusMessage.innerHTML = currentPlayerTurn();
+                cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+                restartButton.addEventListener('click', handleRestartGame);
+            }
+
+            /**
+             * Handles a click on a cell.
+             * @param {Event} clickedCellEvent - The click event from the cell.
+             */
+            function handleCellClick(clickedCellEvent) {
+                const clickedCell = clickedCellEvent.target;
+                const clickedCellIndex = parseInt(clickedCell.getAttribute('data-cell-index'));
+
+                // If cell is already played or game is inactive, do nothing
+                if (gameState[clickedCellIndex] !== "" || !gameActive) {
+                    return;
+                }
+
+                // Process the move
+                handleCellPlayed(clickedCell, clickedCellIndex);
+                handleResultValidation();
+            }
+
+            /**
+             * Updates the game state and UI for a played cell.
+             * @param {HTMLElement} clickedCell - The DOM element of the cell.
+             * @param {number} clickedCellIndex - The index (0-8) of the cell.
+             */
+            function handleCellPlayed(clickedCell, clickedCellIndex) {
+                gameState[clickedCellIndex] = currentPlayer;
+                clickedCell.innerHTML = currentPlayer;
+                clickedCell.classList.add(currentPlayer); // Add X or O class for styling
+            }
+
+            /**
+             * Changes the current player.
+             */
+            function handlePlayerChange() {
+                currentPlayer = currentPlayer === "X" ? "O" : "X";
+                statusMessage.innerHTML = currentPlayerTurn();
+            }
+
+            /**
+             * NEW: Draws the winning line on the SVG canvas.
+             * @param {Array<number>} winCondition - The array of 3 winning indices.
+             */
+            function drawWinningLine(winCondition) {
+                // Clear any previous lines
+                svgLineElement.innerHTML = '';
+
+                // Get the start and end cells
+                const startCell = document.querySelector(`[data-cell-index="${winCondition[0]}"]`);
+                const endCell = document.querySelector(`[data-cell-index="${winCondition[2]}"]`);
+
+                // Get cell positions relative to the game board container
+                // We use offsetLeft/Top because the SVG is positioned relative to the board
+                const startX = startCell.offsetLeft + startCell.offsetWidth / 2;
+                const startY = startCell.offsetTop + startCell.offsetHeight / 2;
+                
+                const endX = endCell.offsetLeft + endCell.offsetWidth / 2;
+                const endY = endCell.offsetTop + endCell.offsetHeight / 2;
+
+                // Create the SVG line element
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', startX);
+                line.setAttribute('y1', startY);
+                line.setAttribute('x2', endX);
+                line.setAttribute('y2', endY);
+                
+                // Set line color based on the winner
+                const winnerColor = currentPlayer === 'X' ? '#22d3ee' : '#ec4899'; // cyan-400 or pink-400
+                line.setAttribute('stroke', winnerColor);
+                
+                svgLineElement.appendChild(line);
+            }
+
+            /**
+             * Checks if the game has been won, drawn, or should continue.
+             */
+            function handleResultValidation() {
+                let roundWon = false;
+                let winningLine = []; // Store the winning line
+
+                for (let i = 0; i < winningConditions.length; i++) {
+                    const winCondition = winningConditions[i];
+                    let a = gameState[winCondition[0]];
+                    let b = gameState[winCondition[1]];
+                    let c = gameState[winCondition[2]];
+
+                    if (a === '' || b === '' || c === '') {
+                        continue; // This line is not complete
+                    }
+                    
+                    // If all three cells are the same, we have a winner
+                    if (a === b && b === c) {
+                        roundWon = true;
+                        winningLine = winCondition; // Store the winning line
+                        break;
+                    }
+                }
+
+                if (roundWon) {
+                    statusMessage.innerHTML = winMessage();
+                    gameActive = false;
+                    drawWinningLine(winningLine); // Call the new draw function
+                    return;
+                }
+
+                // Check for a draw (no more empty cells)
+                let roundDraw = !gameState.includes("");
+                if (roundDraw) {
+                    statusMessage.innerHTML = drawMessage();
+                    gameActive = false;
+                    return;
+                }
+
+                // If we are here, the game continues. Change the player.
+                handlePlayerChange();
+            }
+
+            /**
+             * Resets the game to its initial state.
+             */
+            function handleRestartGame() {
+                // Reset state variables
+                gameActive = true;
+                currentPlayer = "X";
+                gameState = ["", "", "", "", "", "", "", "", ""];
+
+                // Reset UI
+                statusMessage.innerHTML = currentPlayerTurn();
+                cells.forEach(cell => {
+                    cell.innerHTML = "";
+                    cell.classList.remove('X', 'O'); // Remove color classes
+                });
+                
+                svgLineElement.innerHTML = ""; // Clear the SVG line
+            }
+
+            // --- Event Listeners ---
+            initializeGame();
+        });
+    </script>
+</body>
+</html>
+
