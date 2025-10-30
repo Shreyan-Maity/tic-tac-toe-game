@@ -50,4 +50,4 @@ Set the Branch to main (or master) and the folder to /(root).
 
 Click Save.
 
-After a minute or two, your game will be live at https://your-username.github.io/your-repository-name/.
+After a minute or two, your game will be live at [https://your-username.github.io/your-repository-name/](https://shreyan-maity.github.io/tic-tac-toe-game/tic-tac-toe.html).
