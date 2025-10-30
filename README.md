@@ -1,4 +1,4 @@
-Tic-Tac-Toe Game
+[Tic-Tac-Toe Game](https://shreyan-maity.github.io/tic-tac-toe-game/tic-tac-toe.html)
 
 This is a complete, single-file web application for a modern and visually appealing Tic-Tac-Toe game.
 
@@ -50,4 +50,4 @@ Set the Branch to main (or master) and the folder to /(root).
 
 Click Save.
 
-After a minute or two, your game will be live at [https://your-username.github.io/your-repository-name/](https://shreyan-maity.github.io/tic-tac-toe-game/tic-tac-toe.html).
+After a minute or two, your game will be live at [https://shreyan-maity.github.io/tic-tac-toe-game/tic-tac-toe.html](https://shreyan-maity.github.io/tic-tac-toe-game/tic-tac-toe.html).
